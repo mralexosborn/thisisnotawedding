@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>This Is Not A Wedding</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --chartreuse: #DFFF00;
+            --negroni: #C41E3A;
+            --black: #0a0a0a;
+            --dark: #111;
+            --cream: #f0ede6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 300;
+            background: var(--black);
+            color: var(--cream);
+            overflow-x: hidden;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* Password Screen */
+        .password-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--chartreuse);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .password-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .password-prompt {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-style: italic;
+            font-weight: 300;
+            color: var(--black);
+            margin-bottom: 3rem;
+        }
+
+        .password-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .password-input {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1rem;
+            font-weight: 300;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid var(--black);
+            color: var(--black);
+            text-align: center;
+            width: 280px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .password-input::placeholder {
+            color: rgba(10, 10, 10, 0.4);
+        }
+
+        .password-input:focus {
+            background: rgba(10, 10, 10, 0.05);
+        }
+
+        .password-submit {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-style: italic;
+            padding: 0.8rem 2.5rem;
+            background: var(--black);
+            color: var(--chartreuse);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .password-submit:hover {
+            background: var(--dark);
+            transform: translateY(-2px);
+        }
+
+        .password-error {
+            font-size: 0.75rem;
+            color: var(--negroni);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            height: 1rem;
+        }
+
+        .password-error.visible {
+            opacity: 1;
+        }
+
+        /* Subtle grain */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.02;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Navigation - Fixed Top */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: var(--cream);
+            text-decoration: none;
+        }
+
+        .nav-logo span {
+            color: var(--chartreuse);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--cream);
+            text-decoration: none;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            color: var(--chartreuse);
+        }
+
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--cream);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 8vw;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .date-line {
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--chartreuse);
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.2s forwards;
+        }
+
+        .main-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: clamp(3.5rem, 10vw, 8rem);
+            line-height: 1;
+            letter-spacing: -0.02em;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.4s forwards;
+        }
+
+        .main-title .line {
+            display: block;
+        }
+
+        .main-title .this-is {
+            color: var(--cream);
+        }
+
+        .main-title .not-a {
+            font-style: italic;
+            color: var(--negroni);
+        }
+
+        .main-title .wedding {
+            color: var(--chartreuse);
+        }
+
+        .tagline {
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            color: var(--cream);
+            opacity: 0.5;
+            max-width: 400px;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.6s forwards;
+        }
+
+        /* Hero Discoball */
+        .hero-discoball {
+            position: absolute;
+            right: 10%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 300px;
+            z-index: 1;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-out 0.8s forwards;
+        }
+
+        .discoball-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .discoball-sphere {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 30% 30%, #666 0%, #333 30%, #111 70%, #000 100%);
+            position: relative;
+            animation: float 15s ease-in-out infinite;
+            box-shadow:
+                0 0 60px rgba(223, 255, 0, 0.1),
+                0 0 120px rgba(223, 255, 0, 0.05),
+                inset -30px -30px 60px rgba(0,0,0,0.8);
+        }
+
+        /* Discoball mirror tiles effect */
+        .discoball-sphere::before {
+            content: '';
+            position: absolute;
+            inset: 5%;
+            border-radius: 50%;
+            background: 
+                repeating-conic-gradient(
+                    from 0deg,
+                    rgba(255,255,255,0.03) 0deg 4deg,
+                    transparent 4deg 8deg
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0%,
+                    transparent 8%,
+                    rgba(255,255,255,0.02) 8%,
+                    rgba(255,255,255,0.02) 9%
+                );
+            animation: rotateSlow 60s linear infinite;
+        }
+
+        /* Specular highlight */
+        .discoball-sphere::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 15%;
+            width: 40%;
+            height: 30%;
+            background: linear-gradient(
+                135deg, 
+                rgba(255,255,255,0.4) 0%, 
+                rgba(255,255,255,0.1) 30%,
+                transparent 60%
+            );
+            border-radius: 50%;
+            filter: blur(10px);
+        }
+
+        /* Light rays from discoball */
+        .disco-rays {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .disco-ray {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 1px;
+            transform-origin: left center;
+            opacity: 0.08;
+        }
+
+        .disco-ray:nth-child(1) { 
+            background: linear-gradient(90deg, var(--chartreuse), transparent 70%);
+            animation: rayRotate 25s linear infinite; 
+        }
+        .disco-ray:nth-child(2) { 
+            background: linear-gradient(90deg, var(--negroni), transparent 60%);
+            animation: rayRotate 30s linear infinite reverse; 
+        }
+        .disco-ray:nth-child(3) { 
+            background: linear-gradient(90deg, var(--cream), transparent 50%);
+            animation: rayRotate 35s linear infinite;
+            opacity: 0.04;
+        }
+        .disco-ray:nth-child(4) { 
+            background: linear-gradient(90deg, var(--chartreuse), transparent 40%);
+            animation: rayRotate 20s linear infinite reverse;
+            opacity: 0.06;
+        }
+
+        @keyframes rayRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rotateSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-cta {
+            margin-top: 2.5rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.8s forwards;
+        }
+
+        .scroll-cue {
+            position: absolute;
+            bottom: 4rem;
+            left: 8vw;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s forwards;
+        }
+
+        .scroll-cue span {
+            opacity: 0.3;
+        }
+
+        .scroll-cue::after {
+            content: '';
+            width: 60px;
+            height: 1px;
+            background: var(--cream);
+            opacity: 0.3;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section styling */
+        section {
+            padding: 8rem 8vw;
+            position: relative;
+        }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 8vw;
+            right: 8vw;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .section-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--negroni);
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .section-title em {
+            font-style: italic;
+            color: var(--chartreuse);
+        }
+
+        .section-intro {
+            max-width: 600px;
+            opacity: 0.7;
+            margin-bottom: 3rem;
+        }
+
+        /* Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .detail-item {
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .detail-item h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--chartreuse);
+        }
+
+        .detail-item p {
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-item .emphasis {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--cream);
+            opacity: 1;
+        }
+
+        /* Inline Timeline */
+        .inline-timeline {
+            opacity: 0.7;
+        }
+
+        .inline-timeline .sep {
+            opacity: 0.3;
+            margin: 0 0.3em;
+        }
+
+        /* Alternating section backgrounds */
+        section:nth-of-type(even) {
+            background: var(--dark);
+        }
+
+        /* Attire Section */
+        .attire-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .attire-text p {
+            opacity: 0.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .attire-suggestions {
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .attire-suggestions h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--chartreuse);
+            margin-bottom: 1rem;
+        }
+
+        .attire-suggestions ul {
+            list-style: none;
+            opacity: 0.6;
+        }
+
+        .attire-suggestions li {
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .attire-suggestions li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--negroni);
+        }
+
+        /* RSVP Section */
+        #rsvp {
+            text-align: center;
+            padding: 10rem 8vw;
+        }
+
+        #rsvp .section-label,
+        #rsvp .section-title,
+        #rsvp .section-intro {
+            max-width: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #rsvp .section-intro {
+            max-width: 500px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            letter-spacing: 0.1em;
+            color: var(--black);
+            background: var(--chartreuse);
+            padding: 1rem 3rem;
+            text-decoration: none;
+            transition: all 0.4s ease;
+        }
+
+        .cta-button:hover {
+            background: var(--cream);
+            transform: translateY(-2px);
+        }
+
+        /* Registry Section */
+        .registry-list {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .registry-list li {
+            margin-bottom: 1rem;
+        }
+
+        .registry-list a {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--cream);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .registry-list a:hover {
+            color: var(--chartreuse);
+            border-color: var(--chartreuse);
+        }
+
+        /* Hotels Section */
+        .hotel-card {
+            margin-top: 2rem;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 500px;
+        }
+
+        .hotel-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: var(--cream);
+        }
+
+        .hotel-card p {
+            opacity: 0.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .hotel-card .note {
+            font-style: italic;
+            color: var(--chartreuse);
+            opacity: 1;
+            margin-top: 1rem;
+        }
+
+        /* Guide Section */
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .guide-category {
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .guide-category h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 400;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--chartreuse);
+        }
+
+        .guide-category ul {
+            list-style: none;
+        }
+
+        .guide-category li {
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            position: relative;
+            opacity: 0.7;
+        }
+
+        .guide-category li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--negroni);
+        }
+
+        .guide-category li .price {
+            opacity: 0.4;
+            font-size: 0.8em;
+        }
+
+        /* FAQ Section */
+        .faq-list {
+            margin-top: 2rem;
+            max-width: 700px;
+        }
+
+        .faq-item {
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .faq-item:first-child {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .faq-item h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--cream);
+            margin-bottom: 1rem;
+        }
+
+        .faq-item p {
+            opacity: 0.7;
+        }
+
+        /* Footer */
+        footer {
+            padding: 6rem 8vw;
+            text-align: center;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 8vw;
+            right: 8vw;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .footer-names {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .footer-names .ampersand {
+            font-style: italic;
+            color: var(--negroni);
+            margin: 0 0.3em;
+        }
+
+        .footer-date {
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            color: var(--chartreuse);
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-location {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0.4;
+        }
+
+        .quote {
+            margin-top: 4rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1rem;
+            opacity: 0.3;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .quote cite {
+            display: block;
+            margin-top: 1rem;
+            font-style: normal;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 900px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: rgba(10, 10, 10, 0.98);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+                pointer-events: none;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .hero {
+                padding: 0 6vw;
+            }
+
+            .hero-discoball {
+                width: 150px;
+                height: 150px;
+                right: 5%;
+                top: 20%;
+                transform: none;
+                opacity: 0.4;
+            }
+
+            section {
+                padding: 5rem 6vw;
+            }
+
+            section::before {
+                left: 6vw;
+                right: 6vw;
+            }
+
+            .attire-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .details-grid {
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Screen -->
+    <div class="password-screen" id="passwordScreen">
+        <h1 class="password-prompt">Password, please?</h1>
+        <form class="password-form" onsubmit="checkPassword(event)">
+            <input type="password" class="password-input" id="passwordInput" placeholder="Enter password" autocomplete="off">
+            <button type="submit" class="password-submit">Enter</button>
+            <p class="password-error" id="passwordError">Incorrect password</p>
+        </form>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#top" class="nav-logo">A <span>&</span> M</a>
+        <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</button>
+        <div class="nav-links">
+            <a href="#details">Details</a>
+            <a href="#attire">Attire</a>
+            <a href="#rsvp">RSVP</a>
+            <a href="#registry">Registry</a>
+            <a href="#hotels">Hotels</a>
+            <a href="#guide">Guide</a>
+            <a href="#faq">FAQ</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="top">
+        <div class="hero-content">
+            <p class="date-line">September 12, 2026 · Richmond, Virginia</p>
+            <h1 class="main-title">
+                <span class="line this-is">This is</span>
+                <span class="line not-a">not a</span>
+                <span class="line wedding">Wedding</span>
+            </h1>
+            <p class="tagline">No ceremony. No vows. No processional. Just a party — and you're invited.</p>
+            <a href="https://docs.google.com/forms/d/1j6oY71yS_of2YHrp4vuzjqt8B2AhLlEwx-Lu6k98qgw/edit" target="_blank" class="cta-button hero-cta">RSVP</a>
+        </div>
+        
+        <!-- Discoball -->
+        <div class="hero-discoball">
+            <div class="discoball-container">
+                <div class="discoball-sphere"></div>
+                <div class="disco-rays">
+                    <div class="disco-ray"></div>
+                    <div class="disco-ray"></div>
+                    <div class="disco-ray"></div>
+                    <div class="disco-ray"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-cue"><span>Scroll</span></div>
+    </section>
+
+    <!-- Details -->
+    <section id="details">
+        <p class="section-label">The Details</p>
+        <h2 class="section-title">An evening of <em>controlled chaos</em></h2>
+        <p class="section-intro">We're throwing a party to celebrate our marriage — without the traditional ceremony. Think cocktail hour that never ends, a DJ who understands the assignment, and dancing under the dome.</p>
+        
+        <div class="details-grid">
+            <div class="detail-item">
+                <h3>When</h3>
+                <p class="emphasis">Saturday, September 12, 2026</p>
+                <p class="inline-timeline">6pm cocktails <span class="sep">|</span> 7:15pm dinner <span class="sep">|</span> 8pm dancing <span class="sep">|</span> 10:30pm last call <span class="sep">|</span> 11pm go home</p>
+            </div>
+            
+            <div class="detail-item">
+                <h3>Where</h3>
+                <p class="emphasis">Science Museum of Virginia</p>
+                <p>2500 West Broad Street<br>Richmond, Virginia 23220</p>
+            </div>
+            
+            <div class="detail-item">
+                <h3>What to Expect</h3>
+                <p>Exceptional cocktails. Dancing. Good conversation. The distinct sense that reality has softened around the edges.</p>
+            </div>
+            
+            <div class="detail-item">
+                <h3>What Not to Expect</h3>
+                <p>A ceremony. Walking down an aisle. Lengthy speeches. A bouquet toss. Anything remotely traditional.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Attire -->
+    <section id="attire">
+        <p class="section-label">Dress Code</p>
+        <h2 class="section-title"><em>Black Tie</em> — interpreted</h2>
+        
+        <div class="attire-content">
+            <div class="attire-text">
+                <p>We're asking for formal attire because this is a celebration worth dressing up for. But we encourage interpretation.</p>
+                <p>Embrace the unexpected. A melting pocket square. An impossible color. Accessories that shouldn't exist. The only rule: come as the most elegant version of yourself.</p>
+                
+                <div class="attire-suggestions">
+                    <h4>Some ideas</h4>
+                    <ul>
+                        <li>Floor-length gowns, cocktail dresses</li>
+                        <li>Tuxedos, dark suits</li>
+                        <li>Surrealist accessories encouraged</li>
+                        <li>Metallics, jewel tones, chartreuse</li>
+                        <li>Comfortable dancing shoes</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="attire-suggestions" style="border-top: none; padding-top: 0;">
+                <h4>Please avoid</h4>
+                <ul>
+                    <li>White or ivory (that's Meg's territory)</li>
+                    <li>Casual attire</li>
+                    <li>Anything you couldn't dance in</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP -->
+    <section id="rsvp">
+        <p class="section-label">RSVP</p>
+        <h2 class="section-title">Let us know you're <em>coming</em></h2>
+        <p class="section-intro">We need a headcount. For the bar. For the caterer. For our own sanity. Please RSVP by the date on your invitation.</p>
+        <a href="https://docs.google.com/forms/d/1j6oY71yS_of2YHrp4vuzjqt8B2AhLlEwx-Lu6k98qgw/edit" target="_blank" class="cta-button">RSVP</a>
+    </section>
+
+    <!-- Registry -->
+    <section id="registry">
+        <p class="section-label">Registry</p>
+        <h2 class="section-title">If you're feeling <em>generous</em></h2>
+        <p class="section-intro">Your presence is the real gift. But if you'd like to contribute to our new life together, we're registered at the following:</p>
+        
+        <ul class="registry-list">
+            <li><a href="https://www.bloomingdales.com" target="_blank">Bloomingdale's</a></li>
+            <li><a href="https://www.homedepot.com" target="_blank">Home Depot</a></li>
+        </ul>
+    </section>
+
+    <!-- Hotels -->
+    <section id="hotels">
+        <p class="section-label">Accommodations</p>
+        <h2 class="section-title">Where to <em>stay</em></h2>
+        <p class="section-intro">We recommend staying in Scott's Addition — Richmond's most walkable neighborhood for restaurants, breweries, and late-night tacos.</p>
+        
+        <div class="hotel-card">
+            <h3>Courtyard by Marriott Scott's Addition</h3>
+            <p>3100 W. Leigh Street<br>Richmond, VA 23230</p>
+            <p class="note"><a href="https://www.marriott.com/event-reservations/reservation-link.mi?id=1769117855444&key=GRP&app=resvlink" target="_blank" style="color: var(--chartreuse); text-decoration: underline; text-underline-offset: 3px;">Book your room in our block</a></p>
+        </div>
+    </section>
+
+    <!-- Guide -->
+    <section id="guide">
+        <p class="section-label">A Local's Guide</p>
+        <h2 class="section-title">Richmond, <em>briefly</em></h2>
+        <p class="section-intro">You're in a great city. Here's where we'd send you.</p>
+
+        <div class="guide-grid">
+            <div class="guide-category">
+                <h3>Eat</h3>
+                <ul>
+                    <li>Lost Letter <span class="price">$$$$</span></li>
+                    <li>Lillian <span class="price">$$$</span></li>
+                    <li>Slack Tide <span class="price">$$$</span></li>
+                    <li>Lucky AF <span class="price">$$$</span></li>
+                    <li>Peter Chang <span class="price">$$</span></li>
+                    <li>ZZQ <span class="price">$$</span></li>
+                    <li>Don't Look Back <span class="price">$$</span></li>
+                    <li>Eazzy Burger <span class="price">$</span></li>
+                </ul>
+            </div>
+
+            <div class="guide-category">
+                <h3>Drink</h3>
+                <ul>
+                    <li>The Veil Brewing Co. <span class="price">(brewery)</span></li>
+                    <li>Vasen Brewing Company <span class="price">(brewery)</span></li>
+                    <li>Ardent Craft Ales <span class="price">(brewery)</span></li>
+                    <li>Cirrus Vodka <span class="price">(cocktails)</span></li>
+                    <li>Blanchard's <span class="price">(coffee)</span></li>
+                    <li>Grit <span class="price">(coffee)</span></li>
+                </ul>
+                <p style="opacity: 0.4; margin-top: 1rem; font-size: 0.85em;">Breweries all walkable from the hotel.</p>
+            </div>
+
+            <div class="guide-category">
+                <h3>Do</h3>
+                <ul>
+                    <li>VMFA <span class="price">(free, world-class)</span></li>
+                    <li>Maymont</li>
+                    <li>Virginia Museum of History &amp; Culture</li>
+                    <li>American Civil War Museum</li>
+                    <li>Belle Isle <span class="price">(hiking)</span></li>
+                    <li>Carytown <span class="price">(shopping, walking)</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+        <p class="section-label">FAQ</p>
+        <h2 class="section-title">Questions you might <em>have</em></h2>
+        
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3>Wait, so there's no ceremony?</h3>
+                <p>Correct. We'll handle the legal bits privately. This party is purely a celebration — no walking down aisles, no officiant, no "speak now or forever hold your peace." Just cocktails, dinner, dancing, and the people we love most.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Can I bring a date?</h3>
+                <p>Please refer to your invitation for specifics. If it says "and guest," absolutely. If it's addressed only to you, we hope you understand — the venue has limits and we wanted to keep this intimate.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>What's the parking situation?</h3>
+                <p>The Science Museum has a large free parking lot. We'll also have details about rideshare pickup/dropoff zones closer to the date.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>Will there be an open bar?</h3>
+                <p>Yes. We take hospitality seriously.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>What if I have dietary restrictions?</h3>
+                <p>Please let us know when you RSVP and we'll make sure you're taken care of. Our caterer is excellent with accommodations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-names">
+            Alex<span class="ampersand">&</span>Meg
+        </p>
+        <p class="footer-date">9 · 12 · 26</p>
+        <p class="footer-location">Richmond, Virginia</p>
+    </footer>
+
+    <script>
+        // Password check
+        function checkPassword(e) {
+            e.preventDefault();
+            const password = document.getElementById('passwordInput').value.toLowerCase();
+            const errorEl = document.getElementById('passwordError');
+            
+            if (password === 'olivebrine') {
+                document.getElementById('passwordScreen').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                // Store in session so refresh doesn't re-prompt
+                sessionStorage.setItem('authenticated', 'true');
+            } else {
+                errorEl.classList.add('visible');
+                document.getElementById('passwordInput').value = '';
+                setTimeout(() => errorEl.classList.remove('visible'), 2000);
+            }
+        }
+
+        // Check if already authenticated this session
+        if (sessionStorage.getItem('authenticated') === 'true') {
+            document.getElementById('passwordScreen').classList.add('hidden');
+        } else {
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Focus password input on load
+        document.getElementById('passwordInput').focus();
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    // Close mobile menu if open
+                    document.querySelector('.nav-links').classList.remove('active');
+                }
+            });
+        });
+
+        // Parallax on discoball
+        document.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const discoball = document.querySelector('.hero-discoball');
+            if (discoball && scrolled < window.innerHeight) {
+                discoball.style.transform = `translateY(calc(-50% + ${scrolled * 0.3}px))`;
+            }
+        });
+
+        // Hide/show nav on scroll
+        let lastScroll = 0;
+        document.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                nav.style.transform = 'translateY(-100%)';
+            } else {
+                nav.style.transform = 'translateY(0)';
+            }
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>
