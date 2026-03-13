@@ -257,132 +257,67 @@
             animation: fadeIn 1s ease-out 0.6s forwards;
         }
 
-        /* Hero Discoball */
-        .hero-discoball {
+        /* Hero Right Column (countdown) */
+        .hero-right {
             position: absolute;
-            right: 10%;
+            right: 8%;
             top: 50%;
             transform: translateY(-50%);
-            width: 300px;
-            height: 300px;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
             opacity: 0;
             animation: fadeIn 1.5s ease-out 0.8s forwards;
         }
 
-        .discoball-container {
+
+        /* Countdown Timer */
+        .hero-countdown {
+            z-index: 1;
+        }
+
+        .countdown-container {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .countdown-unit {
+            text-align: center;
             position: relative;
-            width: 100%;
-            height: 100%;
         }
 
-        .discoball-sphere {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: 
-                radial-gradient(circle at 30% 30%, #666 0%, #333 30%, #111 70%, #000 100%);
-            position: relative;
-            animation: float 15s ease-in-out infinite;
-            box-shadow:
-                0 0 60px rgba(223, 255, 0, 0.1),
-                0 0 120px rgba(223, 255, 0, 0.05),
-                inset -30px -30px 60px rgba(0,0,0,0.8);
+        .countdown-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            line-height: 1;
+            color: var(--chartreuse);
+            min-width: 2.5ch;
+            display: block;
         }
 
-        /* Discoball mirror tiles effect */
-        .discoball-sphere::before {
-            content: '';
-            position: absolute;
-            inset: 5%;
-            border-radius: 50%;
-            background: 
-                repeating-conic-gradient(
-                    from 0deg,
-                    rgba(255,255,255,0.03) 0deg 4deg,
-                    transparent 4deg 8deg
-                ),
-                repeating-linear-gradient(
-                    0deg,
-                    transparent 0%,
-                    transparent 8%,
-                    rgba(255,255,255,0.02) 8%,
-                    rgba(255,255,255,0.02) 9%
-                );
-            animation: rotateSlow 60s linear infinite;
+        .countdown-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--cream);
+            opacity: 0.35;
+            margin-top: 0.75rem;
+            display: block;
         }
 
-        /* Specular highlight */
-        .discoball-sphere::after {
-            content: '';
-            position: absolute;
-            top: 10%;
-            left: 15%;
-            width: 40%;
-            height: 30%;
-            background: linear-gradient(
-                135deg, 
-                rgba(255,255,255,0.4) 0%, 
-                rgba(255,255,255,0.1) 30%,
-                transparent 60%
-            );
-            border-radius: 50%;
-            filter: blur(10px);
-        }
-
-        /* Light rays from discoball */
-        .disco-rays {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-        }
-
-        .disco-ray {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 800px;
-            height: 1px;
-            transform-origin: left center;
-            opacity: 0.08;
-        }
-
-        .disco-ray:nth-child(1) { 
-            background: linear-gradient(90deg, var(--chartreuse), transparent 70%);
-            animation: rayRotate 25s linear infinite; 
-        }
-        .disco-ray:nth-child(2) { 
-            background: linear-gradient(90deg, var(--negroni), transparent 60%);
-            animation: rayRotate 30s linear infinite reverse; 
-        }
-        .disco-ray:nth-child(3) { 
-            background: linear-gradient(90deg, var(--cream), transparent 50%);
-            animation: rayRotate 35s linear infinite;
-            opacity: 0.04;
-        }
-        .disco-ray:nth-child(4) { 
-            background: linear-gradient(90deg, var(--chartreuse), transparent 40%);
-            animation: rayRotate 20s linear infinite reverse;
-            opacity: 0.06;
-        }
-
-        @keyframes rayRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes rotateSlow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        .countdown-separator {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            color: var(--cream);
+            opacity: 0.15;
+            align-self: flex-start;
+            padding-top: 0.5rem;
         }
 
         .hero-cta {
@@ -822,13 +757,25 @@
                 padding: 0 6vw;
             }
 
-            .hero-discoball {
-                width: 150px;
-                height: 150px;
-                right: 5%;
-                top: 20%;
+            .hero-right {
+                position: relative;
+                right: auto;
+                top: auto;
                 transform: none;
-                opacity: 0.4;
+                margin-top: 3rem;
+                align-items: flex-start;
+            }
+
+            .countdown-container {
+                gap: 1rem;
+            }
+
+            .countdown-number {
+                font-size: 1.8rem !important;
+            }
+
+            .countdown-separator {
+                font-size: 1.2rem !important;
             }
 
             section {
@@ -854,7 +801,7 @@
 <body>
     <!-- Password Screen -->
     <div class="password-screen" id="passwordScreen">
-        <h1 class="password-prompt">Password, please?</h1>
+        <h1 class="password-prompt">Password, please.</h1>
         <form class="password-form" onsubmit="checkPassword(event)">
             <input type="password" class="password-input" id="passwordInput" placeholder="Enter password" autocomplete="off">
             <button type="submit" class="password-submit">Enter</button>
@@ -886,19 +833,34 @@
                 <span class="line not-a">not a</span>
                 <span class="line wedding">Wedding</span>
             </h1>
-            <p class="tagline">No ceremony. No vows. No processional. Just a party — and you're invited.</p>
+            <p class="tagline">Meg and Alex are getting married</p>
             <a href="https://docs.google.com/forms/d/1j6oY71yS_of2YHrp4vuzjqt8B2AhLlEwx-Lu6k98qgw/edit" target="_blank" class="cta-button hero-cta">RSVP</a>
         </div>
         
-        <!-- Discoball -->
-        <div class="hero-discoball">
-            <div class="discoball-container">
-                <div class="discoball-sphere"></div>
-                <div class="disco-rays">
-                    <div class="disco-ray"></div>
-                    <div class="disco-ray"></div>
-                    <div class="disco-ray"></div>
-                    <div class="disco-ray"></div>
+        <!-- Countdown -->
+        <div class="hero-right">
+
+            <div class="hero-countdown" id="heroCountdown">
+                <div class="countdown-container">
+                    <div class="countdown-unit">
+                        <span class="countdown-number" id="countDays">000</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <span class="countdown-separator">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-number" id="countHours">00</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <span class="countdown-separator">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-number" id="countMinutes">00</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <span class="countdown-separator">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-number" id="countSeconds">00</span>
+                        <span class="countdown-label">Seconds</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -940,7 +902,7 @@
     <!-- Attire -->
     <section id="attire">
         <p class="section-label">Dress Code</p>
-        <h2 class="section-title"><em>Black Tie</em> — interpreted</h2>
+        <h2 class="section-title">Formal, avant garde</h2>
         
         <div class="attire-content">
             <div class="attire-text">
@@ -971,15 +933,15 @@
     </section>
 
     <!-- RSVP -->
-    <section id="rsvp">
+    <!-- <section id="rsvp">
         <p class="section-label">RSVP</p>
         <h2 class="section-title">Let us know you're <em>coming</em></h2>
         <p class="section-intro">We need a headcount. For the bar. For the caterer. For our own sanity. Please RSVP by the date on your invitation.</p>
         <a href="https://docs.google.com/forms/d/1j6oY71yS_of2YHrp4vuzjqt8B2AhLlEwx-Lu6k98qgw/edit" target="_blank" class="cta-button">RSVP</a>
-    </section>
+    </section> -->
 
     <!-- Registry -->
-    <section id="registry">
+    <!-- <section id="registry">
         <p class="section-label">Registry</p>
         <h2 class="section-title">If you're feeling <em>generous</em></h2>
         <p class="section-intro">Your presence is the real gift. But if you'd like to contribute to our new life together, we're registered at the following:</p>
@@ -988,13 +950,13 @@
             <li><a href="https://www.bloomingdales.com" target="_blank">Bloomingdale's</a></li>
             <li><a href="https://www.homedepot.com" target="_blank">Home Depot</a></li>
         </ul>
-    </section>
+    </section> -->
 
     <!-- Hotels -->
     <section id="hotels">
         <p class="section-label">Accommodations</p>
         <h2 class="section-title">Where to <em>stay</em></h2>
-        <p class="section-intro">We recommend staying in Scott's Addition — Richmond's most walkable neighborhood for restaurants, breweries, and late-night tacos.</p>
+        <p class="section-intro">We have a hotel block in Scott's Addition — Richmond's most walkable neighborhood for restaurants, breweries, and late-night tacos. More room blocks will become available as we get closer to the date.</p>
         
         <div class="hotel-card">
             <h3>Courtyard by Marriott Scott's Addition</h3>
@@ -1059,12 +1021,12 @@
         <div class="faq-list">
             <div class="faq-item">
                 <h3>Wait, so there's no ceremony?</h3>
-                <p>Correct. We'll handle the legal bits privately. This party is purely a celebration — no walking down aisles, no officiant, no "speak now or forever hold your peace." Just cocktails, dinner, dancing, and the people we love most.</p>
+                <p>Correct. We are having a private ceremony earlier in the day. This party is purely a celebration.</p>
             </div>
             
             <div class="faq-item">
                 <h3>Can I bring a date?</h3>
-                <p>Please refer to your invitation for specifics. If it says "and guest," absolutely. If it's addressed only to you, we hope you understand — the venue has limits and we wanted to keep this intimate.</p>
+                <p>Yes, every invitee is entitled to a guest.</p>
             </div>
             
             <div class="faq-item">
@@ -1135,14 +1097,34 @@
             });
         });
 
-        // Parallax on discoball
-        document.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const discoball = document.querySelector('.hero-discoball');
-            if (discoball && scrolled < window.innerHeight) {
-                discoball.style.transform = `translateY(calc(-50% + ${scrolled * 0.3}px))`;
+        // Countdown timer to Sept 12, 2026 at 6:00 PM ET
+        function updateCountdown() {
+            // Target: Sept 12, 2026 6:00 PM ET (UTC-4 during EDT)
+            const target = new Date('2026-09-12T18:00:00-04:00');
+            const now = new Date();
+            const diff = target - now;
+
+            if (diff <= 0) {
+                document.getElementById('countDays').textContent = '0';
+                document.getElementById('countHours').textContent = '00';
+                document.getElementById('countMinutes').textContent = '00';
+                document.getElementById('countSeconds').textContent = '00';
+                return;
             }
-        });
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('countDays').textContent = days;
+            document.getElementById('countHours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('countMinutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('countSeconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
 
         // Hide/show nav on scroll
         let lastScroll = 0;
