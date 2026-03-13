@@ -257,7 +257,7 @@
             animation: fadeIn 1s ease-out 0.6s forwards;
         }
 
-        /* Hero Right Column (countdown) */
+        /* Hero Right Column (disco ball + countdown) */
         .hero-right {
             position: absolute;
             right: 8%;
@@ -272,6 +272,191 @@
             animation: fadeIn 1.5s ease-out 0.8s forwards;
         }
 
+        /* Disco Ball */
+        .discoball-wrapper {
+            position: relative;
+            width: clamp(120px, 15vw, 200px);
+            height: clamp(120px, 15vw, 200px);
+        }
+
+        .discoball-string {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, rgba(240, 237, 230, 0.3));
+            transform: translateX(-50%);
+        }
+
+        .discoball {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            /* 3D sphere shading — highlight upper-left, dark lower-right */
+            background: radial-gradient(
+                circle at 32% 28%,
+                #d4d4d8 0%,
+                #a8a8b0 15%,
+                #808090 30%,
+                #58586a 50%,
+                #303040 70%,
+                #1a1a24 100%
+            );
+            box-shadow:
+                inset -6px -6px 20px rgba(0, 0, 0, 0.5),
+                inset 4px 4px 12px rgba(255, 255, 255, 0.06),
+                0 0 60px rgba(223, 255, 0, 0.06),
+                0 4px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Tile grid — drifts horizontally to simulate rotation */
+        .discoball-tiles {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 9px,
+                    rgba(255, 255, 255, 0.12) 9px,
+                    rgba(255, 255, 255, 0.12) 10px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 9px,
+                    rgba(255, 255, 255, 0.12) 9px,
+                    rgba(255, 255, 255, 0.12) 10px
+                );
+            animation: tileDrift 3s linear infinite;
+        }
+
+        @keyframes tileDrift {
+            from { background-position: 0 0, 0 0; }
+            to { background-position: 10px 0, 0 0; }
+        }
+
+        /* Fixed specular highlight — anchors the 3D illusion */
+        .discoball-shine {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: radial-gradient(
+                ellipse at 28% 22%,
+                rgba(255, 255, 255, 0.55) 0%,
+                rgba(255, 255, 255, 0.12) 25%,
+                transparent 50%
+            );
+            pointer-events: none;
+        }
+
+        /* Color shimmer sweep — light catching tiles as ball turns */
+        .discoball-shimmer {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: linear-gradient(
+                105deg,
+                transparent 25%,
+                rgba(223, 255, 0, 0.12) 42%,
+                rgba(255, 255, 255, 0.18) 50%,
+                rgba(196, 30, 58, 0.08) 58%,
+                transparent 75%
+            );
+            animation: shimmerSweep 4s ease-in-out infinite;
+        }
+
+        @keyframes shimmerSweep {
+            0%, 100% { transform: translateX(-80%); opacity: 0; }
+            50% { transform: translateX(80%); opacity: 1; }
+        }
+
+        /* Glint sparkles — small bright flashes on individual tiles */
+        .discoball-glint {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+            opacity: 0;
+            animation: glintFlash 2.5s ease-in-out infinite;
+            box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.6);
+        }
+
+        .discoball-glint:nth-child(1) { top: 22%; left: 35%; animation-delay: 0s; }
+        .discoball-glint:nth-child(2) { top: 38%; left: 60%; animation-delay: 0.8s; }
+        .discoball-glint:nth-child(3) { top: 55%; left: 28%; animation-delay: 1.6s; }
+        .discoball-glint:nth-child(4) { top: 30%; left: 72%; animation-delay: 0.4s; animation-duration: 3s; }
+        .discoball-glint:nth-child(5) { top: 65%; left: 50%; animation-delay: 2.0s; animation-duration: 2.8s; }
+
+        @keyframes glintFlash {
+            0%, 80%, 100% { opacity: 0; transform: scale(0.5); }
+            40% { opacity: 0.9; transform: scale(1); }
+        }
+
+        /* Light rays emanating outward */
+        .disco-rays {
+            position: absolute;
+            inset: -60%;
+            animation: raysRotate 12s linear infinite;
+            pointer-events: none;
+        }
+
+        .disco-ray {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 120%;
+            transform-origin: center center;
+            opacity: 0;
+            animation: rayPulse 3s ease-in-out infinite;
+        }
+
+        .disco-ray:nth-child(1) {
+            background: linear-gradient(to bottom, transparent 40%, var(--chartreuse), transparent 60%);
+            transform: rotate(25deg) translateY(-50%);
+            animation-delay: 0s;
+        }
+        .disco-ray:nth-child(2) {
+            background: linear-gradient(to bottom, transparent 40%, var(--negroni), transparent 60%);
+            transform: rotate(95deg) translateY(-50%);
+            animation-delay: 0.6s;
+        }
+        .disco-ray:nth-child(3) {
+            background: linear-gradient(to bottom, transparent 40%, var(--chartreuse), transparent 60%);
+            transform: rotate(155deg) translateY(-50%);
+            animation-delay: 1.2s;
+        }
+        .disco-ray:nth-child(4) {
+            background: linear-gradient(to bottom, transparent 40%, rgba(240, 237, 230, 0.5), transparent 60%);
+            transform: rotate(210deg) translateY(-50%);
+            animation-delay: 1.8s;
+        }
+        .disco-ray:nth-child(5) {
+            background: linear-gradient(to bottom, transparent 40%, var(--negroni), transparent 60%);
+            transform: rotate(280deg) translateY(-50%);
+            animation-delay: 2.4s;
+        }
+        .disco-ray:nth-child(6) {
+            background: linear-gradient(to bottom, transparent 40%, var(--chartreuse), transparent 60%);
+            transform: rotate(340deg) translateY(-50%);
+            animation-delay: 0.3s;
+        }
+
+        @keyframes raysRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rayPulse {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.15; }
+        }
 
         /* Countdown Timer */
         .hero-countdown {
@@ -766,6 +951,12 @@
                 align-items: flex-start;
             }
 
+            .discoball-wrapper {
+                width: 100px;
+                height: 100px;
+                align-self: center;
+            }
+
             .countdown-container {
                 gap: 1rem;
             }
@@ -816,8 +1007,8 @@
         <div class="nav-links">
             <a href="#details">Details</a>
             <a href="#attire">Attire</a>
-            <a href="#rsvp">RSVP</a>
-            <a href="#registry">Registry</a>
+            <!-- <a href="#rsvp">RSVP</a>
+            <a href="#registry">Registry</a> -->
             <a href="#hotels">Hotels</a>
             <a href="#guide">Guide</a>
             <a href="#faq">FAQ</a>
@@ -837,8 +1028,29 @@
             <a href="https://docs.google.com/forms/d/1j6oY71yS_of2YHrp4vuzjqt8B2AhLlEwx-Lu6k98qgw/edit" target="_blank" class="cta-button hero-cta">RSVP</a>
         </div>
         
-        <!-- Countdown -->
+        <!-- Disco Ball + Countdown -->
         <div class="hero-right">
+            <div class="discoball-wrapper">
+                <div class="discoball-string"></div>
+                <div class="discoball">
+                    <div class="discoball-tiles"></div>
+                    <div class="discoball-shimmer"></div>
+                    <div class="discoball-shine"></div>
+                    <div class="discoball-glint"></div>
+                    <div class="discoball-glint"></div>
+                    <div class="discoball-glint"></div>
+                    <div class="discoball-glint"></div>
+                    <div class="discoball-glint"></div>
+                </div>
+                <div class="disco-rays">
+                    <div class="disco-ray"></div>
+                    <div class="disco-ray"></div>
+                    <div class="disco-ray"></div>
+                    <div class="disco-ray"></div>
+                    <div class="disco-ray"></div>
+                    <div class="disco-ray"></div>
+                </div>
+            </div>
 
             <div class="hero-countdown" id="heroCountdown">
                 <div class="countdown-container">
@@ -1031,7 +1243,7 @@
             
             <div class="faq-item">
                 <h3>What's the parking situation?</h3>
-                <p>The Science Museum has a large free parking lot. We'll also have details about rideshare pickup/dropoff zones closer to the date.</p>
+                <p>The Science Museum has a large free parking lot. Ubers and Lyfts are also plentiful in the area.</p>
             </div>
             
             <div class="faq-item">
